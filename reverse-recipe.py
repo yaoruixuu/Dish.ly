@@ -36,32 +36,27 @@ def search_stock_images(prompt):
         # If there's an error, return a message
         return f"Error: Unable to fetch images. Status code: {response.status_code}"
 
-user_input = ""
 
 # Main function to get user input and fetch images
 def main():
-    user_input = input("What dish would you like: ")
-    image_urls = search_stock_images(user_input)
-    
-    if isinstance(image_urls, list):
-        print("\nFound image URLs:")
-        for url in image_urls:
-            print(url)
-    else:
-        print(image_urls)
+    # Remove whitespaces then split by commas to get a list of ingredients
+    # Put into an array user_ingredients
+    user_ingredients = input("What ingredients do you have? e.g. cheese, bacon, potatoes: ")
 
-    chat_completion = client.chat.completions.create(
+    chat_completion_ingredients = client.chat.completions.create(
         messages=[
             {
                 "role": "user",
-                "content": "give ingredients and preparation steps for "+user_input,
+                "content": "I have " + user_ingredients + " so what dishes can I make with these ingredients? Output your answer only in the format 'dish1,dish2,dish3,...'",
             }
         ],
         model="llama-3.3-70b-versatile",
     )
-    ai_response=chat_completion.choices[0].message.content
-    print(ai_response)
+
+    dishes = (chat_completion_ingredients.choices[0].message.content).split(",")
+    for dish in dishes: 
+        image_urls = search_stock_images(dish)
+        for url in image_urls: print("name: " + dish + ", image: " + url)
 
 if __name__ == "__main__":
     main()
-
