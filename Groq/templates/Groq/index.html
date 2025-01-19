@@ -3,11 +3,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Recipe AI</title>
+        <title>Dish.ly - Home</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'Groq/index.css' %}">
         <style>
             #Response{
                 border: solid black 2px;
             }
+            
         </style>
         <title>Dishly - Groq-powered Recipe AI</title>
         <script>
@@ -39,11 +41,32 @@
     </head>
     <body>
         
-            <form id="prompt_form" name="prompt_form" method="post">
-                <input id="prompt" type="text" name="prompt">
-                <input type="submit" id="submit">
-            </form>
+            
             <div id="Response"></div>
+
+
+            <!--index-->
+            <div style="transform: translateY(100px)">
+                <h1>Dish.ly</h1>
+                <div class="subtitle">Find your favourite dish</div>
+                <div class="search-bar" style="justify-content: center; align-items: center;">
+                    <div class="search-container">
+                        <form id="prompt_form" name="prompt_form" method="post">
+                            <input id="prompt" class="search-box" type="text" name="prompt" placeholder="Enter a dish...">
+                            <input type="submit" id="submit" class="search-btn">
+                        </form> 
+                    </div>
+                    
+                </div>
+        
+                <div class="section-2" style="justify-content: center; align-items: center;">
+                    <p>Customise your dish with...</p>
+                    <div class="section-2-1">
+                        <button class="search-btn">Advanced Search</button>
+                        <button class="search-btn">Reverse Recipes</button>
+                    </div>
+                </div>
+            </div>
         
     </body>
 </html>
