@@ -10,6 +10,13 @@ from groq import Groq
 
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
+system_prompt = {
+                "role": "system",
+                "content":
+                "You are a helpful assistant. Your name is jack."
+            }
+chat_history = [system_prompt]
+
 @csrf_exempt
 def chat_view(request):
     
@@ -19,20 +26,20 @@ def chat_view(request):
         print(data)
         user_msg = data['prompt']
         
+        chat_history.append({"role": "user", "content": user_msg})
         
-        chat_completion = client.chat.completions.create(
-            messages=[
-                {
-                    "role": "user",
-                    "content": user_msg,
-                }
-            ],
+        response = client.chat.completions.create(
+            messages=chat_history,
             model="llama-3.3-70b-versatile",
         )
+        chat_history.append({
+            "role": "assistant",
+            "content": response.choices[0].message.content
+        })
         
-        ai_response=chat_completion.choices[0].message.content
-        print(ai_response)
-        return JsonResponse({'response':ai_response})
+        this_response = response.choices[0].message.content
+        print(this_response)
+        return JsonResponse({'response':this_response})
     
     else:
         return render(request, "Groq/index.html",{

@@ -4,6 +4,11 @@
 <html>
     <head>
         <title>Recipe AI</title>
+        <style>
+            #Response{
+                border: solid black 2px;
+            }
+        </style>
         <script>
             document.addEventListener('DOMContentLoaded', function(){
                 document.querySelector('#prompt_form').onsubmit = function(){         
@@ -17,7 +22,13 @@
                     })
                     .then(response => response.json())
                     .then(ai_response =>{
-                        document.querySelector('#Response').innerHTML = ai_response.response
+                        user_prompt = document.createElement('div')
+                        user_prompt.innerHTML = prompt
+                        response = document.createElement('div')
+                        response.innerHTML = ai_response.response
+                        document.querySelector('#Response').append(user_prompt)
+                        document.querySelector('#Response').append(response)
+                        
                     })
                     return false
                 }
