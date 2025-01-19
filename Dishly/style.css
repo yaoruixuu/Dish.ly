@@ -1,4 +1,9 @@
 .input{
     border:0;
     outline:none;
+    background-color: transparent;
 }
+
+body {
+    background-color: #ffe2bb;
+  }
