@@ -3,7 +3,6 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
-import re
 import os
 import json
 from groq import Groq
@@ -28,7 +27,7 @@ def chat_view(request):
         user_msg = data['prompt']
         
         chat_history.append({"role": "user", "content": "give ingredients and 5 preparation steps for "+user_msg+"""give to me in easy format
-        to process, dont add unessesary stuff"""})
+        to process, dont add unessesary stuff, it should be ingredients, and steps for the subtitles"""})
         
         response = client.chat.completions.create(
             messages=chat_history,
@@ -42,56 +41,59 @@ def chat_view(request):
         this_response = response.choices[0].message.content
         print(this_response)
 
-        #################
+    
         image_urls = search_stock_images(user_msg)
 
         img_url=image_urls[0]
         
-        return JsonResponse({'response':img_url+"#"+this_response})
-    
-    #######################
-    
-    
+        unprocessed = img_url+"#"+this_response
 
-    
+        link, ingredient_s, step_s =  process_response(unprocessed)
 
-    ###################
+        
+        return JsonResponse({
+            'link': link,
+            'ingredients' : ingredient_s,
+            'steps' : step_s
+            })
+    
+   
+    
     
     else:
         return render(request, "Groq/index.html",{
        
     })
 
-def process_recipe(recipe_string):
-    # Split the recipe string into ingredients and preparation steps
-    sections = recipe_string.split("**5 Preparation Steps:**")
-    
-    # Extract ingredients and steps
-    ingredients_section = sections[0].replace("**Pizza Ingredients:**", "").strip()
-    steps_section = sections[1].strip()
-    
-    # Process the ingredients into an array
-    ingredients = [item.strip() for item in ingredients_section.split('-') if item.strip()]
+# sorting response
+def process_response(input):
+    link = get_link(input)
+    ingredient_s = ingredients(input)
+    step_s = steps(input)
+    return link, ingredient_s, step_s
 
-    # Process the preparation steps into an array
-    steps = [step.strip() for step in steps_section.split('\n') if step.strip()]
+def get_link(input):
+    for i in range(len(input)):
+        if input[i]=='#':
+            link = input[:i]
+            return link
+        
+def ingredients(input):
+    find1 = "Ingredients"
+    find2 = "Steps"
+    start = input.find(find1)
+  
+    end = input.find(find2)
+    ingredient_s = input[start+16:end]
+    return ingredient_s
 
-    return ingredients, steps
-
-def split_steps(steps_string):
-    # Use regular expression to split the string by the pattern "number. space"
-    steps = re.findall(r'\d+\.\s*(.*?)(?=\s*\d+\.|$)', steps_string)
+def steps(input):
+    find1 = "Steps"
+    start = input.find(find1)
+    start = start+9
+    steps = input[start:]
     return steps
 
-link=0
-
-for i in range(len(input)):
-    if input[i]=='#':
-        link = input[:i]
-        new_input = input[i+1:]
-
-steps = split_steps(steps[0])
-ingredients, steps = process_recipe(new_input)
 
 # Function to search stock images using Unsplash API based on a prompt
 def search_stock_images(prompt):
@@ -122,7 +124,7 @@ def search_stock_images(prompt):
         # If there's an error, return a message
         return f"Error: Unable to fetch images. Status code: {response.status_code}"
 
-user_input = ""
+
 
 
 

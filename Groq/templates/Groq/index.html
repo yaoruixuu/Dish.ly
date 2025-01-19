@@ -1,72 +1,250 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Dish.ly - Home</title>
-        <link rel="stylesheet" type="text/css" href="{% static 'Groq/index.css' %}">
-        <style>
-            #Response{
-                border: solid black 2px;
-            }
-            
-        </style>
-        <title>Dishly - Groq-powered Recipe AI</title>
-        <script>
-            document.addEventListener('DOMContentLoaded', function(){
-                document.querySelector('#prompt_form').onsubmit = function(){         
-                    prompt = document.querySelector('#prompt').value           
-                    
-                    fetch("",{
-                        method:'POST',
-                        body: JSON.stringify({
-                            prompt:prompt
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(ai_response =>{
-                        user_prompt = document.createElement('div')
-                        user_prompt.innerHTML = prompt
-                        response = document.createElement('div')
-                        response.innerHTML = ai_response.response
-                        document.querySelector('#Response').append(user_prompt)
-                        document.querySelector('#Response').append(response)
-                        
-                    })
-                    return false
-                }
-                
-            })
-        </script>
-    </head>
-    <body>
-        
-            
-            <div id="Response"></div>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dish.ly - Groq-powered Recipe AI</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'Groq/index.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
 
+        h1 {
+            font-size: 2.5em;
+            margin: 0.5em 0;
+            text-align: center;
+        }
 
-            <!--index-->
-            <div style="transform: translateY(100px)">
-                <h1>Dish.ly</h1>
-                <div class="subtitle">Find your favourite dish</div>
-                <div class="search-bar" style="justify-content: center; align-items: center;">
-                    <div class="search-container">
-                        <form id="prompt_form" name="prompt_form" method="post">
-                            <input id="prompt" class="search-box" type="text" name="prompt" placeholder="Enter a dish...">
-                            <input type="submit" id="submit" class="search-btn">
-                        </form> 
-                    </div>
-                    
-                </div>
-        
-                <div class="section-2" style="justify-content: center; align-items: center;">
-                    <p>Customise your dish with...</p>
-                    <div class="section-2-1">
-                        <button class="search-btn">Advanced Search</button>
-                        <button class="search-btn">Reverse Recipes</button>
-                    </div>
-                </div>
+        .subtitle {
+            font-size: 1.2em;
+            color: #666;
+            text-align: center;
+            margin-bottom: 1em;
+        }
+
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2em;
+        }
+
+        .search-box {
+            width: 300px;
+            padding: 0.8em 1em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .search-btn {
+            padding: 0.8em 1.2em;
+            margin-left: 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background-color: #555;
+        }
+
+        .section-2 {
+            text-align: center;
+            margin-top: 2em;
+        }
+
+        .section-2-1 {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button.search-btn {
+            width: 150px;
+        }
+
+        #Response {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            margin-top: 2em;
+            background-color: #fff;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        #img {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto 20px;
+            border-radius: 10px;
+        }
+
+        #ingredients {
+            background-color: #f2f2f2;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: left;
+            color: #555;
+            font-size: 1.1em;
+        }
+
+        #ingredients ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        #ingredients li {
+            padding: 10px;
+            background-color: #fff;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #steps {
+            background-color: #f2f2f2;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: left;
+            color: #555;
+            font-size: 1.1em;
+        }
+
+        #steps ol {
+            padding-left: 20px;
+        }
+
+        #steps li {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        #steps li::before {
+            content: counter(step-counter) ". ";
+            font-weight: bold;
+            position: absolute;
+            left: -40px;
+            top: 0;
+            font-size: 1.5em;
+            color: #4e5b31;
+            counter-increment: step-counter;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('#prompt_form').onsubmit = function () {
+                const prompt = document.querySelector('#prompt').value;
+
+                fetch("", {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        prompt: prompt
+                    })
+                })
+                .then(response => response.json())
+                .then(ai_response => {
+                    const responseContainer = document.querySelector('#Response');
+                    responseContainer.innerHTML = "";
+
+                    const img = document.createElement('img');
+                    const listIngredients = document.createElement('div');
+                    const listSteps = document.createElement('div');
+                    const backButton = document.createElement('button');
+
+                    img.src = ai_response.link;
+                    listIngredients.textContent = ai_response.ingredients;
+                    listSteps.textContent = ai_response.steps;
+
+                    backButton.textContent = "Go Back";
+                    backButton.onclick = function () {
+                        responseContainer.style.display = "none";
+                        document.querySelector('#search').style.display = "block";
+                    };
+
+                    img.id = "img";
+                    listIngredients.id = "ingredients";
+                    listSteps.id = "steps";
+
+                    responseContainer.append(img, listIngredients, listSteps, backButton);
+                    responseContainer.style.display = "block";
+                    document.querySelector('#search').style.display = "none";
+                });
+
+                return false;
+            };
+        });
+    </script>
+</head>
+<body>
+    <div id="search">
+        <h1>Dish.ly</h1>
+        <div class="subtitle">Find your favorite dish</div>
+        <div class="search-bar">
+            <form id="prompt_form" name="prompt_form" method="post">
+                <input id="prompt" class="search-box" type="text" name="prompt" placeholder="Enter a dish...">
+                <input type="submit" id="submit" class="search-btn" value="Search">
+            </form>
+        </div>
+        <div class="section-2">
+            <p>Customize your dish with...</p>
+            <div class="section-2-1">
+                <button class="search-btn">Advanced Search</button>
+                <button class="search-btn">Reverse Recipes</button>
             </div>
-        
-    </body>
+        </div>
+    </div>
+    <div id="Response">
+        <div id="img"></div>
+        <div id="ingredients">
+            <ul>
+                <li>Ingredient 1</li>
+                <li>Ingredient 2</li>
+                <li>Ingredient 3</li>
+            </ul>
+        </div>
+        <div id="steps">
+            <ol>
+                <li>Step 1: Prepare the ingredients.</li>
+                <li>Step 2: Cook the dish in a pan.</li>
+                <li>Step 3: Garnish and serve.</li>
+            </ol>
+        </div>
+    </div>
+</body>
 </html>
