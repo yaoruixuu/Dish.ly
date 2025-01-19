@@ -18,7 +18,7 @@ def search_stock_images(prompt):
     # Parameters for the API request
     params = {
         'query': prompt,  # The search keyword based on user input
-        'per_page': 5,  # Number of results per page
+        'per_page': 1,  # Number of results per page
         'client_id': api_key  # API key for authorization
     }
     
@@ -47,14 +47,13 @@ def main():
         print("\nFound image URLs:")
         for url in image_urls:
             print(url)
-    else:
-        print(image_urls)
+   
 
     chat_completion = client.chat.completions.create(
         messages=[
             {
                 "role": "user",
-                "content": "give ingredients and preparation steps for "+user_input,
+                "content": "give ingredients and 5 preparation steps for "+user_input,
             }
         ],
         model="llama-3.3-70b-versatile",
