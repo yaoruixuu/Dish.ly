@@ -4,8 +4,29 @@
 <html>
     <head>
         <title>Recipe AI</title>
+        <script>
+            document.addEventListener('DOMContentLoaded', function(){
+                document.querySelector('#prompt_form').onsubmit = function(){         
+                    prompt = document.querySelector('#prompt').value           
+                    
+                    fetch("",{
+                        method:'POST',
+                        body: JSON.stringify({
+                            prompt:prompt
+                        })
+                    })
+                    return false
+                }
+                
+            })
+        </script>
     </head>
     <body>
+        <form id="prompt_form" name="prompt_form" method="post">
+            <input id="prompt" type="text" name="prompt">
+            <input type="submit" id="submit">
+        </form>
+        <div id="Response"></div>
         
     </body>
 </html>

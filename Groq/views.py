@@ -1,32 +1,41 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
-#groq demo
 import os
-
+import json
 from groq import Groq
 
-def index(request):
-    client = Groq(
-        api_key=os.environ.get("GROQ_API_KEY"),
-    )
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
-    chat_completion = client.chat.completions.create(
-        messages=[
-            {
-                "role": "user",
-                "content": "Explain the importance of fast language models",
-            }
-        ],
-        model="llama-3.3-70b-versatile",
-    )
-
-    message=chat_completion.choices[0].message.content
-    print(message)
-    return render(request, "Groq/index.html",{
-        "msg":message
+@csrf_exempt
+def chat_view(request):
+    
+    if request.method=="POST":
+     
+        data = json.loads(request.body)
+        user_msg = data.prompt
+        
+        
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": user_msg,
+                }
+            ],
+            model="llama-3.3-70b-versatile",
+        )
+        
+        ai_response=chat_completion.choices[0].message.content
+        print(ai_response)
+        return JsonResponse({'response':ai_response})
+    
+    else:
+        return render(request, "Groq/index.html",{
+       
     })
 
 
