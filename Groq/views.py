@@ -46,6 +46,37 @@ def chat_view(request):
        
     })
 
+def reverse(request):
+    if request.method=="POST":
+     
+        data = json.loads(request.body)
+        print(data)
+        user_array = data['prompt']
+        user_msg="Give me a recipe with only "
+        for param in user_array:
+            user_msg = f'${user_msg} + ${param}'
+        
+        chat_history.append({"role": "user", "content": user_msg})
+
+        response = client.chat.completions.create(
+            messages=chat_history,
+            model="llama-3.3-70b-versatile",
+        )
+        chat_history.append({
+            "role": "assistant",
+            "content": response.choices[0].message.content
+        })
+        
+        this_response = response.choices[0].message.content
+        print(this_response)
+        return JsonResponse({'response':this_response})
+    
+    else:
+        return render(request, "Groq/reverse.html",{  
+    })
+
+
+
 
 
 
