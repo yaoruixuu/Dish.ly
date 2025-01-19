@@ -16,7 +16,8 @@ def chat_view(request):
     if request.method=="POST":
      
         data = json.loads(request.body)
-        user_msg = data.prompt
+        print(data)
+        user_msg = data['prompt']
         
         
         chat_completion = client.chat.completions.create(

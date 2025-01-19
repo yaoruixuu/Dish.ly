@@ -15,6 +15,10 @@
                             prompt:prompt
                         })
                     })
+                    .then(response => response.json())
+                    .then(ai_response =>{
+                        document.querySelector('#Response').innerHTML = ai_response.response
+                    })
                     return false
                 }
                 
