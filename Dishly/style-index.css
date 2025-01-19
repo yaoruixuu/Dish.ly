@@ -4,6 +4,37 @@ body {
     margin: 0;
     padding: 0;
     background-color: #ffe2bb;
+    color: #333;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background-color: #eb8600;
+    color: black;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-family: 'Fraunces', serif;
+}
+
+.top-bar .logo a {
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+
+.hero {
+    text-align: center;
+    padding: 100px 20px 50px; /* fixed header */
+    background: linear-gradient(to right, #ffcc70, #ff9f00);
+    border-radius: 10px;
+    margin-top: 80px; /* top bar */
 }
 
 h1 {
@@ -15,8 +46,10 @@ h1 {
 }
 
 .subtitle {
-    text-align: center;
+    font-size: 1.5em;
+    color: #444;
     margin-top: 20px;
+    font-style: italic;
 }
 
 .search-bar {
@@ -44,14 +77,22 @@ h1 {
 .search-btn {
     background-color: #ffbd66;
     color: black;
-    border: 0;
-    padding: 10px 20px;
-    margin-left: 10px;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1.25em;
     cursor: pointer;
+    border-radius: 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.3s;
 }
 
 .search-btn:hover {
     background-color: #eb8600;
+    transform: translateY(-3px);
+}
+
+.search-btn:active {
+    transform: translateY(0);
 }
 
 .section-2 {
