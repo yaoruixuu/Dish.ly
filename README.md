@@ -114,28 +114,13 @@ The application requires two API keys:
 1. **Groq API Key**: Set as environment variable `GROQ_API_KEY`
 2. **Unsplash API Key**: Currently hardcoded in `views.py` (line 104)
 
-⚠️ **Security Note**: For production, move all API keys to environment variables or a secure secrets manager.
+**Security Note**: For production, move all API keys to environment variables or a secure secrets manager.
 
-## 🤝 Contributing
 
-This project was created for UOttaHack 7. Contributions, issues, and feature requests are welcome!
-
-## 📝 License
+## License
 
 This project is open source and available under the [MIT License](LICENSE).
 
-## 👥 Team
-
-Created with ❤️ at UOttaHack 7
-
-## 🙏 Acknowledgments
-
-- [Groq](https://groq.com) for providing fast AI inference
-- [Unsplash](https://unsplash.com) for beautiful food photography
-- [Meta](https://ai.meta.com) for the Llama 3.3 model
-- UOttaHack 7 organizers and mentors
-
-## 📧 Contact
 
 For questions or feedback, please open an issue on GitHub.
 
